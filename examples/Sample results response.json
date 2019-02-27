@@ -1,0 +1,44 @@
+{
+    "pending" : ["A3", "A4", "A5"],
+    "results" : [
+        {
+            "well" : "A1",
+            "data" : [
+                {
+                    "analyte" : 0,
+                    "reading" : 5
+                },
+                {
+                    "analyte" : 0,
+                    "reading" : 15
+                },
+                {
+                    "analyte" : 10,
+                    "reading" : 12345
+                }
+            ]
+        },
+        {
+            "well" : "A2",
+            "data" : [
+                {
+                    "analyte" : 0,
+                    "reading" : 15
+                },
+                {
+                    "analyte" : 0,
+                    "reading" : 19
+                },
+                {
+                    "analyte" : 10,
+                    "reading" : 543321
+                },
+                {
+                    "analyte" : 25,
+                    "reading" : 67890
+                }
+            ]
+        }
+    ]
+}
+

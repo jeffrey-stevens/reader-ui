@@ -1,0 +1,5 @@
+# "dist" contains the compiled website
+dist/*
+
+# Don't need downloaded node modules
+node_modules/*

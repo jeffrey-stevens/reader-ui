@@ -1,0 +1,28 @@
+
+svg {
+    user-select: none;
+}
+
+#wells .well {
+    fill: #ffffff;
+}
+
+#wells .well.selecting {
+    fill: #888888;
+}
+
+#wells .well.selected {
+    fill: #0000ff;
+}
+
+/* The "unselecting" state overrides the "selected" state */
+#wells .well.unselecting {
+    fill: #888888;
+}
+
+/*
+         #selection-rect {
+             fill: #666666;
+             opacity: 0.3;
+         }
+*/

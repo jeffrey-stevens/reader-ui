@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Concept Multiplex Reader</title>
+
+    <link rel="stylesheet" type="text/css" href="dashboard-bundle.css">
+
+  </head>
+
+  <body>
+
+      <div style="height: 100vh;">
+    <!-- The navbar -->
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <span class="navbar-brand">Concept Multiplex Reader</span>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container-fluid" style="height:100%;">
+
+      <div class="tab-content" style="height:100%;">
+
+        <div class="tab-pane active" id="run" style="height:100%;">
+
+          <!-- Protocol button bar -->
+          <div class="row">
+              <!-- Leave this as an empty row? -->
+          </div>
+
+          <br /> <br />
+
+
+          <div class="row">
+
+              <!-- The left side bar -->
+              <div class="col-xs-2 col-sm-2 col-med-2 col-lg-2"
+                   style="height: 100%;">
+
+                  <div class="sidebar-nav">
+                      <div class="navbar navbar-default">
+                          <ul class="nav nav-pills nav-stacked">
+                              <li class="active" id="intro-pill">
+                                  <a data-toggle="pill" href="#intro-pane">Introduction</a>
+                              </li>
+                              <li class="disabled" id="wells-pill">
+                                  <a data-toggle="pill" href="#wells-pane">Select wells</a>
+                              </li>
+                              <li class="disabled" id="results-pill">
+                                  <a data-toggle="pill" href="#results-pane">Results</a>
+                              </li>
+                          </ul>
+                      </div>
+                  </div>
+
+              </div>
+
+              <div class="col-xs-10 col-sm-10 col-med-10 col-lg-10"
+                   style="height: 100%;">
+
+                  <div class="tab-content">
+
+                      <div id="intro-pane" class="tab-pane fade in active">
+
+                          <!-- The documentation area -->
+                          <div class="row">
+                              <div class="info-region">
+
+                                  <h1 class="title">
+                                      Welcome to the Concept Multiplex Reader!
+                                  </h1>
+                                  <br />
+
+                                  <a role="button" class="btn btn-primary" id="begin-button"
+                                     data-toggle="modal"
+                                     data-target="#new-plate-modal"
+                                     href="#wells-pane">
+                                      Let's begin!
+                                  </a>
+
+                              </div>
+
+                          </div>
+
+                          <!-- "New plate" modal -->
+                          <div id="new-plate-modal" class="modal fade" role="dialog"
+                               data-backdrop="static" data-keyboard="true">
+                              <div class="modal-dialog modal-md">
+
+                                  <!-- Modal content-->
+                                  <div class="modal-content">
+                                      <div class="modal-header">
+                                          <button type="button" class="close"
+                                                  data-dismiss="modal">&times;</button>
+                                          <h4 class="modal-title">New plate?</h4>
+                                      </div>
+                                      <div class="modal-body">
+                                          <p>Would you like to load a new plate?</p>
+                                      </div>
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-primary"
+                                                  id="load-new-plate-btn"
+                                                  data-dismiss="modal">
+                                              Load new plate
+                                          </button>
+                                          <a role="button" class="btn btn-success"
+                                             id="rerun-plate-btn" href="#wells-pane"
+                                             data-dismiss="modal">
+                                              Rerun loaded plate
+                                          </a>
+                                      </div>
+                                  </div>
+
+                              </div>
+                          </div>
+
+                          <!-- Unload plate done -->
+                          <div id="unload-done-modal" class="modal fade" role="dialog"
+                               data-backdrop="static" data-keyboard="true">
+                              <div class="modal-dialog modal-md">
+
+                                  <!-- Modal content-->
+                                  <div class="modal-content">
+                                      <div class="modal-header">
+                                          <button type="button" class="close"
+                                                  data-dismiss="modal">&times;</button>
+                                          <h4 class="modal-title">Reader ready</h4>
+                                      </div>
+                                      <div class="modal-body">
+                                          <p>The reader is ready now.</p>
+                                          <p>Please insert your new plate and press "OK"</p>
+                                      </div>
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-default"
+                                                  data-toggle="modal"
+                                                  data-target="#new-plate-modal"
+                                                  data-dismiss="modal" >
+                                              Cancel
+                                          </button>
+                                          <a role="button" class="btn btn-success"
+                                             id="load-done-btn" href="#wells-pane"
+                                             data-dismiss="modal">OK</a>
+                                      </div>
+                                  </div>
+
+                              </div>
+                          </div>
+
+                      </div>
+
+                      <div id="wells-pane" class="tab-pane fade">
+
+                          <!-- The documentation area -->
+                          <div class="row">
+                              <div class="info-region">
+                                  <h1>Select wells</h1>
+                                  <p>Use the mouse to select regions of the plate to run.</p>
+                                  <p>Hold down the 'Ctrl' key to deselect wells.</p>
+                                  <p>After you're done, click
+                                      <button type="button" class="btn btn-default"
+                                              id="ready-button">
+                                          Ready!
+                                      </button>
+                                  </p>
+                                  <br />
+                              </div>
+
+                              <!-- "Ready!" modal -->
+                              <div id="ready-modal" class="modal fade" role="dialog"
+                                   data-backdrop="static" data-keyboard="true">
+                                  <div class="modal-dialog modal-md">
+
+                                      <!-- Modal content-->
+                                      <div class="modal-content">
+                                          <div class="modal-header">
+                                              <button type="button" class="close"
+                                                      data-dismiss="modal">&times;</button>
+                                              <h4 class="modal-title">Ready to run!</h4>
+                                          </div>
+                                          <div class="modal-body">
+                                              <p>Great!  Now go head and insert your plate
+                                                  into the reader and hit 'Run!'</p>
+                                          </div>
+                                          <div class="modal-footer">
+                                              <button type="button" class="btn btn-default"
+                                                      data-dismiss="modal">
+                                                  Cancel
+                                              </button>
+                                              <a role="button" class="btn btn-primary"
+                                                 id="submit-run-btn" href="#results-pane"
+                                                 data-dismiss="modal">
+                                                  Run!
+                                              </a>
+                                          </div>
+                                      </div>
+
+                                  </div>
+                              </div>
+
+                          </div>
+
+                          <!-- The SVG plate image -->
+                          <div id="plate-svg-container" >
+                          </div>
+
+                      </div>
+
+
+                      <div id="results-pane" class="tab-pane fade">
+
+                          <!-- The documentation area -->
+                          <div class="row">
+                              <div class="info-region">
+                                  <h1>Results</h1>
+                                  <p>Select to view results "By Well" or "By Analyte".</p>
+                                  <p>Select the well or analyte to plot from the dropdown list..</p>
+                              </div>
+                          </div>
+
+                          <!-- The plot area -->
+                          <div class="col-xs-9 col-sm-9 col-med-9 col-lg-9">
+                              <div class="plot-container">
+                                  <canvas id="plot-canvas" style="height: 60vh; max-height:60vh; width:80%">
+                                  </canvas>
+                              </div>
+                          </div>
+
+                          <!-- UI inputs -->
+                          <div class="col-xs-3 col-sm-3 col-med-3 col-lg-3"
+                               style="height: 100%;">
+
+                              <div class="panel panel-default" style="width: 100%;">
+                                  <div class="panel-body">
+
+                                      <div class="form-group">
+                                          <div class="radio">
+                                              <label>
+                                                  <input type="radio" id="by-well-radio"
+                                                         name="plot-mode" value="by-well" checked>
+                                                  View by Well
+                                              </label>
+                                          </div>
+                                          <div class="radio">
+                                              <label>
+                                                  <input type="radio" id="by-analyte-radio"
+                                                         name="plot-mode" value="by-analyte">
+                                                  View by Analyte
+                                              </label>
+                                          </div>
+                                      </div>
+
+                                      <div class="form-group">
+                                          <div id="selection-container">
+                                              <span id="selection-label"
+                                                    style="margin-right: 0.5em;"></span>
+                                              <select id="selection-list" class="form-control"
+                                              style="display: inline; width: auto;">
+                                              </select>
+                                          </div>
+                                      </div>
+
+                                      <div id="progress-svg-container" style="margin-top: 3ex;">
+                                      </div>
+
+                                      <div id="progress-legend">
+                                          <p>
+                                              <span class="progress-pending">
+                                                  &#x25cf;&emsp;Well not read yet
+                                              </span><br />
+                                              <span class="progress-read">
+                                                  &#x25cf;&emsp;Well successfully read
+                                              </span><br />
+                                              <span class="progress-blank">
+                                                  &#x25cf;&emsp;No beads detected
+                                              </span><br />
+                                              <span class="progress-excluded">
+                                                  &#x25cf;&emsp;Not to be run
+                                              </span><br />
+                                          </p>
+
+                                      </div>
+
+
+
+                                      <!-- Run cancellation -->
+                                      <button type="button" class="btn btn-danger"
+                                              id="cancel-new-run-btn" data-toggle="modal"
+                                              data-target="#cancel-modal"
+                                              style="width: 100%; margin-top: 20px;">
+                                          Cancel
+                                      </button>
+
+                                      <div id="cancel-modal" class="modal fade" role="dialog"
+                                           data-backdrop="static" data-keyboard="true">
+                                          <div class="modal-dialog modal-md">
+
+                                              <!-- Modal content-->
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <button type="button" class="close"
+                                                              data-dismiss="modal">&times;</button>
+                                                      <h4 class="modal-title">Confirm cancel</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <p>Are you sure you'd like to cancel the run?</p>
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                      <button type="button" class="btn btn-default"
+                                                              data-dismiss="modal">
+                                                          Don't cancel
+                                                      </button>
+                                                      <button type="button" class="btn btn-danger"
+                                                              data-dismiss="modal"
+                                                              id="submit-cancel-btn">
+                                                          Cancel run
+                                                      </button>
+                                                  </div>
+                                              </div>
+
+                                          </div>
+                                      </div>
+
+                                      <!-- Wait for cancel -->
+                                      <div id="wait-cancel-modal" class="modal fade" role="dialog"
+                                           data-backdrop="static" data-keyboard="true">
+                                          <div class="modal-dialog modal-md">
+
+                                              <!-- Modal content-->
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <h4 class="modal-title">Cancelling...</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <p>Please wait while the reader cancels
+                                                         the run...</p>
+                                                  </div>
+                                              </div>
+
+                                          </div>
+                                      </div>
+
+                                      <!-- Run cancelled -->
+                                      <div id="cancel-done-modal" class="modal fade" role="dialog"
+                                           data-backdrop="static" data-keyboard="true">
+                                          <div class="modal-dialog modal-md">
+
+                                              <!-- Modal content-->
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <button type="button" class="close"
+                                                              data-dismiss="modal">&times;</button>
+                                                      <h4 class="modal-title">Run cancelled</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <p>The run has been successfully canceled.</p>
+                                                      <p>You can remove your plate anytime.</p>
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                      <button type="button" class="btn btn-primary"
+                                                              data-dismiss="modal">
+                                                          OK
+                                                      </button>
+                                                  </div>
+                                              </div>
+
+                                          </div>
+                                      </div>
+
+                                      <!-- Run complete -->
+                                      <div id="done-modal" class="modal fade" role="dialog"
+                                           data-backdrop="static" data-keyboard="true">
+                                          <div class="modal-dialog modal-md">
+
+                                              <!-- Modal content-->
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <button type="button" class="close"
+                                                              data-dismiss="modal">&times;</button>
+                                                      <h4 class="modal-title">Run complete!</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <p>All done! </p>
+                                                      <p>Click the green 'Start a new run' button
+                                                      to read another plate.</p>
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                      <button type="button" class="btn btn-primary"
+                                                              data-dismiss="modal">
+                                                          OK
+                                                      </button>
+                                                  </div>
+                                              </div>
+
+                                          </div>
+                                      </div>
+
+
+                                      <!-- New run -->
+                                      <div id="new-run-modal" class="modal fade" role="dialog"
+                                           data-backdrop="static" data-keyboard="true">
+                                          <div class="modal-dialog modal-md">
+
+                                              <!-- Modal content-->
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <button type="button" class="close"
+                                                              data-dismiss="modal">&times;</button>
+                                                      <h4 class="modal-title">Confirm new run</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <p>Are you sure you'd like to start another
+                                                         run?</p>
+                                                      <p>All data from this run will be lost...</p>
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                      <button type="button" class="btn btn-default"
+                                                              data-dismiss="modal">
+                                                          Cancel
+                                                      </button>
+                                                      <button type="button" class="btn btn-primary"
+                                                              data-dismiss="modal"
+                                                              id="submit-new-run-btn">
+                                                          New run
+                                                      </button>
+                                                  </div>
+                                              </div>
+
+                                          </div>
+                                      </div>
+
+                                      <button type="button" class="btn btn-default"
+                                              id="eject-plate-btn"
+                                              style="width: 100%; margin-top: 20px;">
+                                          Eject plate
+                                      </button>
+
+
+
+
+                                      <!-- Plate ejected -->
+                                      <div id="eject-done-modal" class="modal fade" role="dialog"
+                                           data-backdrop="static" data-keyboard="true">
+                                          <div class="modal-dialog modal-md">
+
+                                              <!-- Modal content-->
+                                              <div class="modal-content">
+                                                  <div class="modal-header">
+                                                      <button type="button" class="close"
+                                                              data-dismiss="modal">&times;</button>
+                                                      <h4 class="modal-title">Plate ejected</h4>
+                                                  </div>
+                                                  <div class="modal-body">
+                                                      <p>It's safe to remove your plate now.</p>
+                                                  </div>
+                                                  <div class="modal-footer">
+                                                      <button type="button" class="btn btn-primary"
+                                                              data-dismiss="modal">
+                                                          OK
+                                                      </button>
+                                                  </div>
+                                              </div>
+
+                                          </div>
+                                      </div>
+
+                                  </div>
+                              </div>
+                          </div>
+
+                      </div>
+
+                  </div>
+
+              </div>
+
+          </div>
+
+          <!-- Wait for eject -->
+          <div id="eject-modal" class="modal fade" role="dialog"
+               data-backdrop="static" data-keyboard="true">
+              <div class="modal-dialog modal-md">
+
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h4 class="modal-title">Ejecting plate...</h4>
+                      </div>
+                      <div class="modal-body">
+                          <p>Please wait while the reader
+                              ejects the plate...</p>
+                      </div>
+                  </div>
+
+              </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+      </div>
+
+    <script src="dashboard-bundle.js"></script>
+
+  </body>
+</html>

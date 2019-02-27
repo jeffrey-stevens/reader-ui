@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="UTF-8">
+  </head>
+
+  <body>
+
+    <input type="file" accept=".txt" id="file-chooser" />
+
+    <br /><br />
+
+    <form>
+        <input type="radio" id="by-analyte-radio" name="plot-mode" value="by-analyte"
+               checked>
+        By Analyte/Marker
+        <br />
+        <input type="radio" id="by-well-radio" name="plot-mode" value="by-well">
+        By Well/Sample
+        <br />
+    </form>
+
+    <br /><br />
+
+    <div id="selection-container">
+        <span id="selection-label"></span><select id="selection-list"></select>
+    </div>
+
+    <br /><br />
+
+    <div class="chart-container" style="position: relative;">
+        <canvas id="plot-canvas" style="max-height:80vh; max-width:80vw">
+        </canvas>
+    </div>
+
+
+    <!-- ---------- Scripts --------- -->
+
+    <script src="chartjs-bundle.js"></script>
+
+  </body>
+</html>

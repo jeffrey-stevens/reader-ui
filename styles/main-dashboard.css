@@ -1,0 +1,9 @@
+/* Package styles */
+@import "node_modules/bootstrap/dist/css/bootstrap.css";
+@import "node_modules/bootstrap/dist/css/bootstrap-theme.css";
+
+
+/* Local styles */
+/* @import "./superhero.css"; */
+@import "./dashboard.css";
+@import "./wells-selection.css";
