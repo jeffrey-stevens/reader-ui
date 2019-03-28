@@ -6,7 +6,7 @@ Bootstrap and Javascript.
 
 To build:
 
-1.  Install `npm` (Node Package Manager);
+1.  Install `npm`;
 
 2.  Run `npm install -g gulp`;
 
@@ -17,28 +17,16 @@ To build:
 The app will build into the "dist" folder.
 
 
-Note that I'm only validating this on Chrome for performance/capability
-reasons. To use the app:
+To run the app:
 
-1.  Run `npm install http-server -g`
+1.  Run `gulp run-all`.
 
-2.  cd to the "dist" folder;
+2. Navigate to [http://localhost:4000/Dashboard], if it doesn't come up
+automatically (in Chrome or Firefox; the SVG images may not render properly
+in IE).
 
-3.  Run `http-server -c-1`;
-
-4. Navigate to [http://localhost:8080/Dashboard] (in Chrome or Firefox; the
-SVG images may not render properly in IE).
-
-
-I've also implemented a simulation sequencer that the front-end can talk to.
-Both the file server and the simulator can be run with
-
-```
-gulp launch-servers
-```
-
-This will serve real (but obfuscated) data, one well per "results" request.
-
+This runs a data server in the background, to simulate data coming from the
+instrument.
 
 Note that Chrome is insanely stubborn about not refreshing the cache. I've found
 that clicking on the refresh button while holding down <CTRL> (Linux) or <Shift>

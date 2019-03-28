@@ -4,6 +4,9 @@
 
 // ----- Includes -----
 
+var url = require('url');
+var cors = require('cors');
+
 var Express = require('express');
 var BodyParser = require('body-parser');
 
@@ -11,9 +14,6 @@ var Util = require("./util.js");
 
 
 // ----- Constants -----
-
-//var PORT = "5000";
-//var RUN_ROUTE = "/run";
 
 var RESULTS_SAMPLE = "./data/Sample data.csv";
 
@@ -192,17 +192,31 @@ function ejectRequestHandler(req, res, next) {
 }
 
 
-function startServer(port, fileServerUrl) {
+function startServer(simServerUrl, fileServerUrl) {
 
     // Set up CORS
-    app.use(function(req, res, next) {
-        res.header("Access-Control-Allow-Origin", fileServerUrl);
-        res.header("Access-Control-Allow-Methods", "POST,OPTIONS");
-        res.header("Access-Control-Allow-Headers",
-                   "Origin, X-Requested-With, Content-Type, Accept");
+    app.use( cors({
+        origin : function(origin, callback) {
+            // Only allow requests from the file server
+            var originUrl = url.parse(origin);
+            var serverUrl = url.parse(fileServerUrl);
+            if (originUrl.origin == serverUrl.origin) {
+                // Good to go!
+                callback(null, true);
+            } else {
+                // Block access to this request
+                callback(new Error("Access denied by CORS."));
+            }
+        }
+    }));
+    //app.use(function(req, res, next) {
+        //res.header("Access-Control-Allow-Origin", fileServerUrl);
+        //res.header("Access-Control-Allow-Methods", "POST,OPTIONS");
+        //res.header("Access-Control-Allow-Headers",
+                   //"Origin, X-Requested-With, Content-Type, Accept");
 
-        next();
-    });
+        //next();
+    //});
 
     // Extract the JSON content from the body of the request
     app.use(BodyParser.json());
@@ -214,21 +228,25 @@ function startServer(port, fileServerUrl) {
     app.post('/eject', ejectRequestHandler);
 
     // Now start up the server
+    var port = url.parse(simServerUrl).port;
     app.listen(port, function() {
         _serverRunning = true;
     });
+
 }
 
 
-function run(port, fileServerUrl) {
+function run(simServerUrl, fileServerUrl) {
 
     // Load the results
     // Don't start the server until the file has loaded (for simplicity)
     loadResults(RESULTS_SAMPLE, function() {
-        startServer(port, fileServerUrl);
+        startServer(simServerUrl, fileServerUrl);
     });
 
 }
+
+
 
 
 // ----- Exports -----

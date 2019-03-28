@@ -3,8 +3,12 @@
 
 ## Tasks
 
+* Update the README with the new run instructions
 * Add a project description to the first page
 * Move test code to the "tests" directory
+* Pass in the sequencer URL as an argument to main-dashboard.js,
+rather than hard-coding it. Better yet, create a separate file with this
+global info.
 
 
 ## Misc
@@ -12,6 +16,7 @@
 * Migrate both HTTP servers into a single server
 * Find a way of killing the Express.js server gracefully
 * Include descriptive comments
+* What if there's an error with the eject/  etc. requests?
 
 
 ## New features

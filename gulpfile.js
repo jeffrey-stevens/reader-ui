@@ -8,12 +8,17 @@ var rename = require('gulp-rename');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var concatcss = require('gulp-concat-css');
+var server = require('gulp-webserver');
+var cors = require('cors');
+
 
 // Local includes
 var seqServer = require('./js/sequencer-sim.js');
 
 
 // ----- Constants -----
+
+var SIMULATE = true;
 
 
 // Source directories
@@ -24,7 +29,8 @@ var JS_SRC_DIR = "js";
 var DATA_SRC_DIR = "data";
 
 // Distribution directories
-var DIST_DIR = "dist";
+var ROOT_DIR = __dirname;
+var DIST_DIR = path.join(ROOT_DIR, "dist");
 var DATA_DEST_DIR = path.join(DIST_DIR, "data");
 
 var DEFAULT_HTML_NAME = "index.html";
@@ -69,9 +75,31 @@ var DASHBOARD_MODULE = "Dash";
 
 
 // Servers
-var FILE_SERVER_URL = "http://localhost:8080";
-var SEQUENCER_SIM_URL = "http://localhost:5000";
+var FILE_SERVER_DIR = DIST_DIR;
+var FILE_SERVER_PORT = "4000";
+var FILE_SERVER_DB_PATH = "Dashboard";
+var FILE_SERVER_URL = url.format({
+    protocol : 'http',
+    hostname : 'localhost',
+    port : FILE_SERVER_PORT,
+    pathname : FILE_SERVER_DB_PATH
+});
 
+var SEQUENCER_SIM_PORT = "5000";
+var SEQUENCER_SIM_HOST = "localhost";
+var SEQUENCER_SIM_URL = url.format({
+    protocol : 'http',
+    hostname : SEQUENCER_SIM_HOST,
+    port : SEQUENCER_SIM_PORT
+});
+
+var SEQUENCER_URL = null;
+if (SIMULATE) {
+    SEQUENCER_URL = SEQUENCER_SIM_URL;
+} else if (SEQUENCER_URL === null) {
+    console.log("Sequencer URL not defined...Will use the simulator.");
+    SEQUENCER_URL = SEQUENCER_SIM_URL;
+}
 
 // ----- Tasks -----
 
@@ -86,12 +114,14 @@ gulp.task('bundle-wells', bundleWellsTask);
 gulp.task('build-dashboard', gulp.parallel('copy-data', buildDashboardTask));
 gulp.task('bundle-dashboard', bundleDashboardTask);
 
-gulp.task('launch-servers', launchServersTask);
+gulp.task('run-app', runApp);
+gulp.task('run-sim', runSim);
+// It's probably better to start the simulator before the file server...
+gulp.task('run-all', gulp.parallel('run-sim', 'run-app'));
 
 gulp.task('build-all', 
             gulp.parallel('build-chartjs', 'build-wells', 'build-dashboard') );
 gulp.task('default', gulp.parallel('build-all'));
-
 
 
 function copyDataTask(done) {
@@ -214,6 +244,29 @@ function bundleDashboardTask(done) {
 }
 
 
+function runApp(done) {
+
+    console.log("File server directory: " + FILE_SERVER_DIR);
+
+    gulp.src(FILE_SERVER_DIR)
+        .pipe(server({
+            livereload : false,
+            open : FILE_SERVER_URL,
+            port : FILE_SERVER_PORT,
+        }));
+
+    done();
+}
+
+
+function runSim(done) {
+
+    seqServer.run(SEQUENCER_SIM_URL, FILE_SERVER_URL);
+
+    done();
+}
+
+
 // ----- Testing -----
 
 // Dump output of exec to the console
@@ -221,16 +274,4 @@ function dump(err, stdout, stderr) {
     console.log(err);
     console.log(stdout);
     console.log(stderr);
-}
-
-// Launch the test servers
-function launchServersTask() {
-    // I'm not entirely sure this will work in Windows...
-
-    // Launch the file server
-    exec('http-server -c-1 dist/ &', dump);
-
-    // Launch the Sequencer simulation server
-    var port = url.parse(SEQUENCER_SIM_URL).port;
-    seqServer.run(port, FILE_SERVER_URL);
 }
