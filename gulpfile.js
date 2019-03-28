@@ -1,18 +1,18 @@
 // ----- Dependencies -----
-var exec = require('child_process').exec;
+
 var url = require('url');
+var path = require('path');
 
 var gulp = require('gulp');
-var path = require('path');
 var rename = require('gulp-rename');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var concatcss = require('gulp-concat-css');
-var server = require('gulp-webserver');
-var cors = require('cors');
+//var server = require('gulp-webserver');
 
 
 // Local includes
+var fileServer = require('./js/file-server.js');
 var seqServer = require('./js/sequencer-sim.js');
 
 
@@ -244,16 +244,22 @@ function bundleDashboardTask(done) {
 }
 
 
+// function runApp(done) {
+
+//     gulp.src(FILE_SERVER_DIR)
+//         .pipe(server({
+//             livereload : false,
+//             open : FILE_SERVER_URL,
+//             port : FILE_SERVER_PORT,
+//         }));
+
+//     done();
+// }
+
+
 function runApp(done) {
 
-    console.log("File server directory: " + FILE_SERVER_DIR);
-
-    gulp.src(FILE_SERVER_DIR)
-        .pipe(server({
-            livereload : false,
-            open : FILE_SERVER_URL,
-            port : FILE_SERVER_PORT,
-        }));
+    fileServer.run();
 
     done();
 }
