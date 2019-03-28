@@ -9,7 +9,7 @@ var bootstrap = require('bootstrap');
 
 // Local includes
 //var Dash = require('./dashboard.js');
-var Util = require('./util.js');
+var Util = require('util.js');
 var Wells = require('./wells-selection.js');
 var PlotUI = require('./plot-ui-chartjs.js');
 var Progress = require('./progress.js');

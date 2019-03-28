@@ -1,5 +1,6 @@
 # "dist" contains the compiled website
-dist/*
+build/site/*
+build/servers/*
 
 # Don't need downloaded node modules
 node_modules/*

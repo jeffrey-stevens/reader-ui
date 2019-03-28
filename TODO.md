@@ -3,7 +3,8 @@
 
 ## Tasks
 
-* Update the README with the new run instructions
+* Launch the servers serially, to make sure that the simulator is ready
+for the UI.
 * Add a project description to the first page
 * Move test code to the "tests" directory
 * Pass in the sequencer URL as an argument to main-dashboard.js,
@@ -15,6 +16,7 @@ global info.
 
 * Include descriptive comments
 * What if there's an error with the eject/  etc. requests?
+* Chartjs app:  Default to opening the simulation data
 
 
 ## New features

@@ -7,7 +7,6 @@ var Express = require('express');
 // ----- Constants -----
 
 // Hard-coding this here to prevent mistakes that could cause huge security issues...
-var DIST_DIR = path.join(__dirname, '..', 'dist');
 var PORT = "4000";
 
 
@@ -18,9 +17,10 @@ app = Express();
 
 // ----- Functions -----
 
-function run() {
+function run(dir) {
 
-    app.use('/', Express.static(DIST_DIR));
+    // This is very dangerous!
+    app.use('/', Express.static(dir));
     app.listen(PORT);
 }
 

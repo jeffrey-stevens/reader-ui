@@ -12,7 +12,7 @@
 
 
 // Local includes
-var Util = require('./util.js');
+var Util = require('util.js');
 var Plot = require('./plot-chartjs.js');
 
 

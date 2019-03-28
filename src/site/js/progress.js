@@ -2,7 +2,7 @@
 
 var d3 = require('d3');
 
-var Util = require('./util.js');
+var Util = require('util.js');
 
 
 // ----- Constants -----
