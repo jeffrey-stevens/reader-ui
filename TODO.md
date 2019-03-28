@@ -1,17 +1,20 @@
-Tasks
+# Todo
+
+
+## Tasks
 
 * Add a project description to the first page
 * Move test code to the "tests" directory
 
 
-Misc
+## Misc
 
 * Migrate both HTTP servers into a single server
 * Find a way of killing the Express.js server gracefully
 * Include descriptive comments
 
 
-New features
+## New features
 
 * Include some descriptive text in the "Introduction" page describing what's
   going on
@@ -26,7 +29,7 @@ New features
   though)
  
 
-UI
+## UI
 
 * Add error reporting/notification
 * Increase font sizes for the panel tabs
@@ -35,13 +38,13 @@ UI
 * Increate font sizes throughout
 
 
-Communications
+## Communications
 
 * Handle "error" fields in the JSON responses
 * Implement request timeouts (especially for cancel, load, etc.)
 
 
-Wells selection
+## Wells selection
 
 * Set SVG size to span the containing div; ensure that the SVG doesn't appear
   below the screen
@@ -50,14 +53,14 @@ Wells selection
   cartoonish
 
 
-Plot
+## Plot
 
 * Draw blank plot on startup
 * Fix clipping issue on the right margin of the plot
 * Center the plot if only a single well is run
 
 
-Results
+## Results
 
 * Suppress highlighting of "Cancel" button upon click
 * Add legend to the progress plate
@@ -65,7 +68,7 @@ Results
 
 
 
-Bugs
+## Bugs
 
 * Once in a while the selection plate won't render when the "Let's begin!"
   button is pressed (though it generally will upon refresh...).
