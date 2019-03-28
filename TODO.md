@@ -13,8 +13,6 @@ global info.
 
 ## Misc
 
-* Migrate both HTTP servers into a single server
-* Find a way of killing the Express.js server gracefully
 * Include descriptive comments
 * What if there's an error with the eject/  etc. requests?
 
@@ -88,9 +86,6 @@ global info.
   change.  The same thing happens when changing wells.
   
 * For starting with a new plate, it tells you to load the plate *twice*.
-
-* 'gulp launch-servers' will crash if a server wasn't shut down properly.
-  I'm not sure how to kill the process in Windows.
 
 * When hovering over the median box in the plots, the median should read
   "median" rather than "reading"
