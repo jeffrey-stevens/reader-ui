@@ -3,6 +3,8 @@
 
 ## Tasks
 
+* Remove hard dependency on localhost for the simulator; this breaks it
+in Docker.
 * Launch the servers serially, to make sure that the simulator is ready
 for the UI.
 * Add a project description to the first page

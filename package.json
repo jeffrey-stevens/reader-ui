@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "UI frontend for a conceptual plate reader.",
   "dependencies": {
+    "body-parser": "^1.18.2",
     "bootstrap": "^3.3.7",
     "chart.js": "^2.7.0",
     "cors": "^2.8.5",
@@ -10,12 +11,13 @@
     "express": "^4.16.2",
     "fs": "0.0.1-security",
     "jquery": "^3.2.1",
-    "serve-static": "^1.13.2"
+    "global": "^4.3.2",
+    "path": "^0.12.7",
+    "url": "^0.11.0"
   },
   "devDependencies": {
-    "body-parser": "^1.18.2",
     "browserify": "^16.2.3",
-    "global": "^4.3.2",
+    "fs": "0.0.1-security",
     "gulp": "^4.0.0",
     "gulp-concat-css": "^3.1.0",
     "gulp-rename": "^1.2.2",

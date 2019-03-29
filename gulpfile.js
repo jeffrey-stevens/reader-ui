@@ -43,6 +43,7 @@ var BUILD_SITE_DASHBOARD = path.join(BUILD_SITE_DIR, "Dashboard");
 var DATA_DIR = path.join(ROOT_DIR, "data");
 
 
+
 // Individual build files
 
 var DEFAULT_HTML_NAME = "index.html";
@@ -113,6 +114,9 @@ if (SIMULATE) {
     SEQUENCER_URL = SEQUENCER_SIM_URL;
 }
 
+var BUILD_SIM_DATA_FILE = path.join(BUILD_SERVERS_DIR, "data", "Sample data.csv");
+
+
 // ----- Tasks -----
 
 gulp.task('build-chartjs', buildChartJSTask);
@@ -129,8 +133,8 @@ gulp.task('build-servers', buildServersTask);
 gulp.task( 'build-all', gulp.parallel('build-chartjs', 'build-wells',
                 'build-dashboard', 'build-servers') );
 
-gulp.task('run-app', runApp);
-gulp.task('run-sim', runSim);
+gulp.task('run-app', runAppTask);
+gulp.task('run-sim', runSimTask);
 // It's probably better to start the simulator before the file server...
 gulp.task('run-all', gulp.parallel('run-sim', 'run-app'));
 
@@ -276,7 +280,7 @@ function buildServersTask(done) {
 }
 
 
-function runApp(done) {
+function runAppTask(done) {
 
     // Check that the project has been built (essentially)
     if (fs.existsSync(BUILD_FILE_SERVER_JS)) {
@@ -292,13 +296,13 @@ function runApp(done) {
 }
 
 
-function runSim(done) {
+function runSimTask(done) {
 
     // Check that the project has been built (essentially)
     if (fs.existsSync(BUILD_SIM_SERVER_JS)) {
 
         var simserver = require(BUILD_SIM_SERVER_JS);
-        simserver.run(SEQUENCER_SIM_URL, FILE_SERVER_URL);
+        simserver.run(SEQUENCER_SIM_URL, FILE_SERVER_URL, BUILD_SIM_DATA_FILE);
 
     } else {
        throw new Error("Project not built yet.");

@@ -15,8 +15,6 @@ var Util = require("./util.js");
 
 // ----- Constants -----
 
-var RESULTS_SAMPLE = "./data/Sample data.csv";
-
 var RUN_DELAY = 0; // Seconds
 var CANCEL_DELAY = 5 * 1000; // Seconds
 var EJECT_DELAY = 5 * 1000;  // Seconds
@@ -236,11 +234,11 @@ function startServer(simServerUrl, fileServerUrl) {
 }
 
 
-function run(simServerUrl, fileServerUrl) {
+function run(simServerUrl, fileServerUrl, datafile) {
 
     // Load the results
     // Don't start the server until the file has loaded (for simplicity)
-    loadResults(RESULTS_SAMPLE, function() {
+    loadResults(datafile, function() {
         startServer(simServerUrl, fileServerUrl);
     });
 
