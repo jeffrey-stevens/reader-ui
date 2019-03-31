@@ -9,6 +9,8 @@ var rename = require('gulp-rename');
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var concatcss = require('gulp-concat-css');
+var replace = require('gulp-replace-path');
+var transform = require('vinyl-transform');
 
 
 // ----- Constants -----
@@ -42,6 +44,11 @@ var BUILD_SITE_DASHBOARD = path.join(BUILD_SITE_DIR, "Dashboard");
 // The Data directory
 var DATA_DIR = path.join(ROOT_DIR, "data");
 
+// The Config directory
+var CONFIG_DIR = path.join(ROOT_DIR, "config");
+
+// The Temporary directory
+var TEMP_DIR = path.join(ROOT_DIR, "temp");
 
 
 // Individual build files
@@ -88,33 +95,26 @@ var DASHBOARD_MODULE = "Dash";
 // Servers info
 var BUILD_FILE_SERVER_JS = path.join(BUILD_SERVERS_DIR, "file-server.js");
 var BUILD_SIM_SERVER_JS = path.join(BUILD_SERVERS_DIR, "sequencer-sim.js");
+var BUILD_SERVERS_RUN_JS = path.join(BUILD_SERVERS_DIR, "run-servers.js");
 
-var FILE_SERVER_PORT = "4000";
-var FILE_SERVER_DB_PATH = "Dashboard";
-var FILE_SERVER_URL = url.format({
-    protocol : 'http',
-    hostname : 'localhost',
-    port : FILE_SERVER_PORT,
-    pathname : FILE_SERVER_DB_PATH
-});
 
-var SEQUENCER_SIM_PORT = "5000";
-var SEQUENCER_SIM_HOST = "localhost";
-var SEQUENCER_SIM_URL = url.format({
-    protocol : 'http',
-    hostname : SEQUENCER_SIM_HOST,
-    port : SEQUENCER_SIM_PORT
-});
+// Docker
+var SRC_DOCKER_DIR = path.join(SRC_DIR, "docker");
+var SRC_DOCKER_FILE = path.join(SRC_DOCKER_DIR, "Dockerfile");
+var BUILD_DOCKER_DIR = path.join(BUILD_DIR, "docker");
+var BUILD_DOCKER_SITE_DIR = path.join(BUILD_DOCKER_DIR, "site");
+var BUILD_DOCKER_SERVERS_DIR = path.join(BUILD_DOCKER_DIR, "servers");
+var NPM_PACKAGE_FILE = path.join(ROOT_DIR, "package.json");
 
-var SEQUENCER_URL = null;
-if (SIMULATE) {
-    SEQUENCER_URL = SEQUENCER_SIM_URL;
-} else if (SEQUENCER_URL === null) {
-    console.log("Sequencer URL not defined...Will use the simulator.");
-    SEQUENCER_URL = SEQUENCER_SIM_URL;
-}
 
-var BUILD_SIM_DATA_FILE = path.join(BUILD_SERVERS_DIR, "data", "Sample data.csv");
+// Configuration files
+var CONFIG_SITE_LOCAL = path.join(CONFIG_DIR, "config-site-local.json");
+var CONFIG_SERVERS_LOCAL = path.join(CONFIG_DIR, "config-servers-local.json");
+var CONFIG_SITE_DOCKER = path.join(CONFIG_DIR, "config-site-docker.json");
+var CONFIG_SERVERS_DOCKER = path.join(CONFIG_DIR, "config-servers-docker.json");
+
+
+// ----- Globals -----
 
 
 // ----- Tasks -----
@@ -125,18 +125,30 @@ gulp.task('bundle-chartjs', bundleChartJSTask);
 gulp.task('build-wells', buildWellsTask);
 gulp.task('bundle-wells', bundleWellsTask);
 
-gulp.task('build-dashboard', buildDashboardTask);
-gulp.task('bundle-dashboard', bundleDashboardTask);
+gulp.task('build-dashboard-local', buildDashboardLocalTask);
+gulp.task('build-dashboard-docker', buildDashboardDockerTask);
+gulp.task('build-dashboard-all', 
+    gulp.parallel('build-dashboard-local', 'build-dashboard-docker'));
 
-gulp.task('build-servers', buildServersTask);
+gulp.task('build-site-local',
+    gulp.parallel('build-chartjs', 'build-wells', 'build-dashboard-local'));
 
-gulp.task( 'build-all', gulp.parallel('build-chartjs', 'build-wells',
-                'build-dashboard', 'build-servers') );
+gulp.task('build-servers-local', buildServersLocalTask);
+gulp.task('build-servers-docker', buildServersDockerTask);
+gulp.task('build-servers-all',
+    gulp.parallel('build-servers-local', 'build-servers-docker'));
 
-gulp.task('run-app', runAppTask);
-gulp.task('run-sim', runSimTask);
-// It's probably better to start the simulator before the file server...
-gulp.task('run-all', gulp.parallel('run-sim', 'run-app'));
+gulp.task('build-all-local',
+    gulp.parallel('build-site-local', 'build-servers-local'));
+
+gulp.task('build-docker-skeleton', buildDockerSkelTask);
+gulp.task('build-docker',
+    gulp.parallel('build-docker-skeleton', 'build-dashboard-docker',
+     'build-servers-docker'));
+
+gulp.task( 'build-all', gulp.parallel('build-all-local', 'build-docker') );
+
+gulp.task('run-servers', runServersTask);
 
 gulp.task('default', gulp.parallel('build-all'));
 
@@ -210,106 +222,143 @@ function bundleWellsTask(done) {
 
 // ----- Dashboard -----
 
-function buildDashboardTask(done) {
+function buildDashboardLocalTask(done) {
+    buildDashboard(BUILD_SITE_DASHBOARD, CONFIG_SITE_LOCAL);
+
+    done();
+}
+
+
+function buildDashboardDockerTask(done) {
+    buildDashboard(BUILD_DOCKER_SITE_DIR, CONFIG_SITE_DOCKER);
+
+    done();
+}
+
+
+function buildDashboard(destdir, config) {
 
     // Copy the html files
     gulp.src(DASHBOARD_SRC_HTML)
         .pipe(rename(DEFAULT_HTML_NAME))
-        .pipe(gulp.dest(BUILD_SITE_DASHBOARD));
+        .pipe(gulp.dest(destdir));
 
     // Copy the plate SVG file
     gulp.src(DASHBOARD_PLATE_SVG)
         // Must rename with with the path
         .pipe(rename(DASHBOARD_PLATE_SVG_DEST_NAME))
-        .pipe(gulp.dest(BUILD_SITE_DASHBOARD));
+        .pipe(gulp.dest(destdir));
 
     // Copy the progress plate SVG file
     gulp.src(DASHBOARD_PROGRESS_SVG)
         // Save to the root directory
         .pipe(rename({dirname : ''}))
-        .pipe(gulp.dest(BUILD_SITE_DASHBOARD));
+        .pipe(gulp.dest(destdir));
 
     // Copy the bootstrap fonts
     gulp.src(path.join(BOOTSTRAP_FONTS, '*.*'))
-        .pipe(gulp.dest(DASHBOARD_FONTS_DIR));
+        .pipe(gulp.dest(path.join(destdir, "fonts")));
     // Should eventualy bundle this as well...
 
-    // Bundle
-    bundleDashboardTask(done);
+    // Bundle the Javascript files
+    bundleDashboard(destdir, config);
 }
 
 
-function bundleDashboardTask(done) {
-    browserify({
-        entries: DASHBOARD_JS_MAIN,
+function bundleDashboard(destdir, config) {
+
+    gulp.src(DASHBOARD_JS_MAIN)
+        .pipe(replace('config.json', path.basename(config)))
+        .pipe(gulp.dest(TEMP_DIR));
+
+    var tempfile = path.join(TEMP_DIR, path.basename(DASHBOARD_JS_MAIN));
+
+    browserify(tempfile, {
         debug: true,
-        basedir: SRC_SITE_JS_DIR,
+        basedir : ROOT_DIR,
         // So that that util.js can be found...
-        paths: [SRC_SHARED_DIR],
-        standalone: DASHBOARD_MODULE })
+        paths: [SRC_SITE_JS_DIR, SRC_SHARED_DIR, CONFIG_DIR],
+        standalone: DASHBOARD_MODULE
+    })
         .bundle()
         .pipe(source(DASHBOARD_JS_BUNDLE))
-        .pipe(gulp.dest(BUILD_SITE_DASHBOARD));
+        .pipe(gulp.dest(destdir));
+    
+    // Delete the temp file
+    //fs.unlinkSync(tempfile);
+    // This complains about not being able to find the file, *after* it deletes it...
 
     // Bundle (concatenate) the css files
     gulp.src(DASHBOARD_CSS_MAIN)
         .pipe(concatcss(DASHBOARD_CSS_BUNDLE))
-        .pipe(gulp.dest(BUILD_SITE_DASHBOARD));
-		
-	done();
+        .pipe(gulp.dest(destdir));
+
+}
+
+
+// ----- Docker -----
+
+function buildDockerSkelTask(done) {
+
+    // Copy the Docker file
+    gulp.src(SRC_DOCKER_FILE)
+        .pipe(gulp.dest(BUILD_DOCKER_DIR));
+
+    // Copy the package.json
+    gulp.src(path.join(ROOT_DIR, 'package*.json'))
+        .pipe(gulp.dest(BUILD_DOCKER_DIR));
+
+    done();
 }
 
 
 // ----- Servers -----
 
-function buildServersTask(done) {
+function buildServersLocalTask(done) {
 
-    // Copy the server JS files
+    buildServers(BUILD_SERVERS_DIR, CONFIG_SERVERS_LOCAL);
+
+    done();
+}
+
+function buildServersDockerTask(done) {
+
+    buildServers(BUILD_DOCKER_SERVERS_DIR, CONFIG_SERVERS_DOCKER);
+
+    done();
+}
+
+
+function buildServers(destdir, config) {
+
+    // Copy the server JS and configuration files
     gulp.src(path.join(SRC_SERVERS_DIR, '**/*'))
-        .pipe(gulp.dest(BUILD_SERVERS_DIR));
+        .pipe(gulp.dest(destdir));
     
     // Copy any shared files
     gulp.src(path.join(SRC_SHARED_DIR, '**/*'))
-        .pipe(gulp.dest(BUILD_SERVERS_DIR));
+        .pipe(gulp.dest(destdir));
     
     // Copy the data
     gulp.src(path.join(DATA_DIR, '**/*'))
-        .pipe(gulp.dest(path.join(BUILD_SERVERS_DIR, "data")));
+        .pipe(gulp.dest(path.join(destdir, "data")));
+    
+    // Copy the config file
+    gulp.src(config)
+        .pipe(rename("config.json"))
+        .pipe(gulp.dest(destdir));
+}
+
+
+function runServersTask(done) {
+
+    var runServers = require(BUILD_SERVERS_RUN_JS);
+
+    runServers.run();
 
     done();
 }
 
-
-function runAppTask(done) {
-
-    // Check that the project has been built (essentially)
-    if (fs.existsSync(BUILD_FILE_SERVER_JS)) {
-
-        var fileServer = require(BUILD_FILE_SERVER_JS);
-        fileServer.run(BUILD_SITE_DIR);
-
-    } else {
-       throw new Error("Project not built yet.");
-    }
-
-    done();
-}
-
-
-function runSimTask(done) {
-
-    // Check that the project has been built (essentially)
-    if (fs.existsSync(BUILD_SIM_SERVER_JS)) {
-
-        var simserver = require(BUILD_SIM_SERVER_JS);
-        simserver.run(SEQUENCER_SIM_URL, FILE_SERVER_URL, BUILD_SIM_DATA_FILE);
-
-    } else {
-       throw new Error("Project not built yet.");
-    }
-
-    done();
-}
 
 
 // ----- Testing -----

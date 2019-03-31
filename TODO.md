@@ -3,6 +3,9 @@
 
 ## Tasks
 
+* Separate out common configuration info (urls, etc.) into configuration
+files.
+* Create a separate Docker build directory?
 * Remove hard dependency on localhost for the simulator; this breaks it
 in Docker.
 * Launch the servers serially, to make sure that the simulator is ready
@@ -34,9 +37,16 @@ global info.
 * View a well by clicking on it (get rid of the drop-down list)
 * Make the "analytes" data field text, not numeric (sorting may be awkward,
   though)
+
+
+## Long-term improvements
+
+* Migrate to ES6
  
 
-## UI
+## Component improvements
+
+### UI
 
 * Add error reporting/notification
 * Increase font sizes for the panel tabs
@@ -45,13 +55,13 @@ global info.
 * Increate font sizes throughout
 
 
-## Communications
+### Communications
 
 * Handle "error" fields in the JSON responses
 * Implement request timeouts (especially for cancel, load, etc.)
 
 
-## Wells selection
+### Wells selection
 
 * Set SVG size to span the containing div; ensure that the SVG doesn't appear
   below the screen
@@ -60,14 +70,14 @@ global info.
   cartoonish
 
 
-## Plot
+### Plot
 
 * Draw blank plot on startup
 * Fix clipping issue on the right margin of the plot
 * Center the plot if only a single well is run
 
 
-## Results
+### Results
 
 * Suppress highlighting of "Cancel" button upon click
 * Add legend to the progress plate

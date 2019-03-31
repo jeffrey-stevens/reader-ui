@@ -1,6 +1,5 @@
 // ----- Imports -----
 
-
 var path = require('path');
 
 global.jQuery = require('jquery');  // For bootstrap
@@ -10,9 +9,9 @@ var bootstrap = require('bootstrap');
 // Local includes
 //var Dash = require('./dashboard.js');
 var Util = require('util.js');
-var Wells = require('./wells-selection.js');
-var PlotUI = require('./plot-ui-chartjs.js');
-var Progress = require('./progress.js');
+var Wells = require('wells-selection.js');
+var PlotUI = require('plot-ui-chartjs.js');
+var Progress = require('progress.js');
 
 
 // ----- Constants -----
@@ -24,19 +23,12 @@ var PROGRESS_SVG_FILE = "progress-plate.svg";
 var PROGRESS_SVG_ID = "progress-svg-container";
 
 var SUBMIT_RUN_BTN_ID = 'submit-run-btn';
-var SEQUENCER_RUN_URL = "http://localhost:5000/run";
-var SEQUENCER_RESULTS_URL = "http://localhost:5000/results";
-var SEQUENCER_CANCEL_URL = "http://localhost:5000/cancel";
-var SEQUENCER_EJECT_URL = "http://localhost:5000/eject";
 
-var RUN_TIMEOUT = 30 * 1000;
-var POLL_INTERVAL = 3 * 1000; // milliseconds
-var POLL_TIMEOUT = POLL_INTERVAL * 3;
-
-// Hard-code this, for simplicity
-var DEFAULT_ANALYTES = "ABCDEFGHIJKLM".split("");
 
 // ----- Globals -----
+
+var _config = require('config.json');
+
 
 var _pendingWells;
 var _currentWell;
@@ -238,7 +230,7 @@ function sendRunRequest() {
 
     // Set up the HTTP request
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", SEQUENCER_RUN_URL, true);
+    xhr.open("POST", _config.sequencerRunUrl, true);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     // Dump the response to the console, for now
     xhr.onreadystatechange = function () {
@@ -258,7 +250,7 @@ function sendRunRequest() {
             // Should check the error state as well...
 
             // Set up the plot
-            _plotui.initialize([], selection, DEFAULT_ANALYTES);
+            _plotui.initialize([], selection, _config.defaultAnalytes);
 
             // Set up the progress widget
             _currentWell = (pendingServer.length > 0) ? pendingServer[0] : null;
@@ -270,7 +262,7 @@ function sendRunRequest() {
     };
 
     // Timeout?  How long does it take to send out a run response?
-    xhr.timeout = RUN_TIMEOUT;
+    xhr.timeout = _config.runTimeout;
     xhr.ontimeout = function(e) {
         console.log("Run request timed out.");
         if (_cancel === false) {
@@ -292,7 +284,7 @@ function setNextResultsPoll() {
 
     if (_cancel === false) {
         // Poll again
-        _pollTimer = setTimeout(sendResultsRequest, POLL_INTERVAL);
+        _pollTimer = setTimeout(sendResultsRequest, _config.pollInterval);
     } else {
         // Do nothing.  This effectively prevents the client from polling again.
     }
@@ -308,7 +300,7 @@ function sendResultsRequest() {
 
     // Set up the HTTP request
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", SEQUENCER_RESULTS_URL, true);
+    xhr.open("POST", _config.sequencerResultsUrl, true);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
     xhr.onreadystatechange = function() {
         // If the request has been successfully received start the polling process
@@ -355,7 +347,7 @@ function sendResultsRequest() {
         }
     };
 
-    xhr.timeout = POLL_TIMEOUT;
+    xhr.timeout = _config.pollTimeout;
     xhr.ontimeout = function(e) {
         console.log("Results request timed out.");
         if (_cancel === false) {
@@ -494,7 +486,7 @@ function sendCancelRequest() {
 
     // Set up the HTTP request
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", SEQUENCER_CANCEL_URL, true);
+    xhr.open("POST", _config.sequencerCancelUrl, true);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
     xhr.onreadystatechange = function() {
@@ -635,7 +627,7 @@ function sendEjectRequest(doneHandler, errorHandler) {
 
     // Set up the HTTP request
     var xhr = new XMLHttpRequest();
-    xhr.open("POST", SEQUENCER_EJECT_URL, true);
+    xhr.open("POST", _config.sequencerEjectUrl, true);
     xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
     xhr.onreadystatechange = function () {

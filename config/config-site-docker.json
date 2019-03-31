@@ -1,0 +1,10 @@
+{
+    "sequencerRunUrl" : "http://192.168.99.100:5000/run",
+    "sequencerResultsUrl" : "http://192.168.99.100:5000/results",
+    "sequencerCancelUrl" : "http://192.168.99.100:5000/cancel",
+    "sequencerEjectUrl" : "http://192.168.99.100:5000/eject",
+    "runTimeout" : 30000,
+    "pollInterval" : 1000,
+    "pollTimeout" : 5000,
+    "defaultAnalytes" : ["A", "B", "C", "D", "E", "F", "G", "H"]
+}

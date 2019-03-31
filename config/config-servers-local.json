@@ -1,0 +1,10 @@
+{
+    "fileServerUrl" : "http://localhost:4000",
+    "siteDir" : "../site",
+    "simServerPort" : "5000",
+    "simRunDelay" : 0,
+    "simCancelDelay" : 5000,
+    "simEjectDelay" : 4000,
+    "simDataFile" : "data/Sample data.csv",
+    "simulate" : true
+}
