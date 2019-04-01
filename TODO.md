@@ -4,12 +4,9 @@
 ## Tasks
 
 * Slow down plate eject, reads
-* Only analytes A-H are displaying in the results plot!
 * Add a project description to the first page
-* Move test code to the "tests" directory
-* Pass in the sequencer URL as an argument to main-dashboard.js,
-rather than hard-coding it. Better yet, create a separate file with this
-global info.
+* Add instructions on how to build and run on Docker
+* Add Docker build and run scripts to package.json
 
 
 ## Misc
@@ -17,6 +14,9 @@ global info.
 * Include descriptive comments
 * What if there's an error with the eject/  etc. requests?
 * Chartjs app:  Default to opening the simulation data
+* Clean up the configuration framework:
+    * Split up the file server and simulation server config files?
+    * Implement a cleaner way of implementing different IP addresses (esp. for Docker)
 
 
 ## New features
