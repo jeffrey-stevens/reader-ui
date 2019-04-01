@@ -3,18 +3,10 @@
 
 ## Tasks
 
-* Separate out common configuration info (urls, etc.) into configuration
-files.
-* Create a separate Docker build directory?
-* Remove hard dependency on localhost for the simulator; this breaks it
-in Docker.
-* Launch the servers serially, to make sure that the simulator is ready
-for the UI.
+* Slow down plate eject, reads
 * Add a project description to the first page
-* Move test code to the "tests" directory
-* Pass in the sequencer URL as an argument to main-dashboard.js,
-rather than hard-coding it. Better yet, create a separate file with this
-global info.
+* Add instructions on how to build and run on Docker
+* Add Docker build and run scripts to package.json
 
 
 ## Misc
@@ -22,6 +14,9 @@ global info.
 * Include descriptive comments
 * What if there's an error with the eject/  etc. requests?
 * Chartjs app:  Default to opening the simulation data
+* Clean up the configuration framework:
+    * Split up the file server and simulation server config files?
+    * Implement a cleaner way of implementing different IP addresses (esp. for Docker)
 
 
 ## New features
@@ -75,6 +70,7 @@ global info.
 * Draw blank plot on startup
 * Fix clipping issue on the right margin of the plot
 * Center the plot if only a single well is run
+* Rotate "analyte" axis labels in the "By Well" results plot.
 
 
 ### Results

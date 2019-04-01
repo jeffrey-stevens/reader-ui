@@ -19,4 +19,4 @@ COPY ./servers ./servers
 EXPOSE 4000 5000
 
 # Now run
-CMD node -e ("require('./servers/run-servers.js').run();")
+CMD node -e "require('/usr/src/app/servers/run-servers.js').run();"

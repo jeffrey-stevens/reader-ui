@@ -1,5 +1,5 @@
 {
-    "fileServerUrl" : "http://localhost:4000",
+    "fileServerUrl" : "http://192.168.99.100:4000",
     "siteDir" : "/usr/src/app/site/",
     "simServerPort" : "5000",
     "simRunDelay" : 0,
