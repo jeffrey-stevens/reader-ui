@@ -89,7 +89,7 @@ ByAnalytePlot.prototype.update = function(newdata) {
 
     // Update the plot
     if (this.plot !== null) {
-        // The individual-bead series
+        // The individual-analyte series
         this.plot.data.datasets[0].data = mediansData;
         this.plot.data.datasets[1].data = pointsData;
 

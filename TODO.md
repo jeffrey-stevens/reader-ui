@@ -3,11 +3,6 @@
 
 ## Tasks
 
-* Separate out common configuration info (urls, etc.) into configuration
-files.
-* Create a separate Docker build directory?
-* Remove hard dependency on localhost for the simulator; this breaks it
-in Docker.
 * Launch the servers serially, to make sure that the simulator is ready
 for the UI.
 * Add a project description to the first page
