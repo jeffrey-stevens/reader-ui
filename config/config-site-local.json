@@ -6,5 +6,5 @@
     "runTimeout" : 30000,
     "pollInterval" : 1000,
     "pollTimeout" : 5000,
-    "defaultAnalytes" : ["A", "B", "C", "D", "E", "F", "G", "H"]
+    "defaultAnalytes" : ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"]
 }

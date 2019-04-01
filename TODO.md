@@ -3,10 +3,8 @@
 
 ## Tasks
 
-* Rotate "analyte" axis labels in the results plot.
+* Slow down plate eject, reads
 * Only analytes A-H are displaying in the results plot!
-* Launch the servers serially, to make sure that the simulator is ready
-for the UI.
 * Add a project description to the first page
 * Move test code to the "tests" directory
 * Pass in the sequencer URL as an argument to main-dashboard.js,
@@ -72,6 +70,7 @@ global info.
 * Draw blank plot on startup
 * Fix clipping issue on the right margin of the plot
 * Center the plot if only a single well is run
+* Rotate "analyte" axis labels in the "By Well" results plot.
 
 
 ### Results
