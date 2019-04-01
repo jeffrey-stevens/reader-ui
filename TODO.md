@@ -3,6 +3,8 @@
 
 ## Tasks
 
+* Rotate "analyte" axis labels in the results plot.
+* Only analytes A-H are displaying in the results plot!
 * Launch the servers serially, to make sure that the simulator is ready
 for the UI.
 * Add a project description to the first page
