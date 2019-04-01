@@ -28,7 +28,11 @@
     "vinyl-transform": "^1.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "docker-build" : "docker build -t reader-ui -f build/docker/Dockerfile build/docker/",
+    "docker-run" : "docker run --name reader-ui -p 4000:4000 -p 5000:5000 reader-ui",
+    "docker-run-devel" : "docker run --name reader-ui -p 4000:4000 -p 5000:5000 -it reader-ui /bin/bash",
+    "docker-stop" : "docker stop reader-ui",
+    "docker-rm" : "docker rm reader-ui"
   },
   "author": "Jeffrey Stevens",
   "license": "GPL-3.0",
