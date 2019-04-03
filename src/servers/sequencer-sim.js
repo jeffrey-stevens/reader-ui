@@ -1,6 +1,6 @@
 // sequencer-sim.js
 //
-// Web server to simulate the sequencer for the concept multiplex reader.
+// Web server to simulate the sequencer for the conceptual multiplex reader.
 
 // ----- Includes -----
 
@@ -13,29 +13,24 @@ var BodyParser = require('body-parser');
 var Util = require("./util.js");
 
 
-// ----- Constants -----
-
-
 // ----- Globals -----
-
-var _config = require('./config.json');
-
-var app = Express();
 
 var _runDelay;
 var _cancelDelay;
 var _ejectDelay;
+var _readInterval;
+
+var app = Express();
 
 var _run = false;
-var _wellsToRun = [];
+var _wellsToRead = [];
+var _wellsRead = [];
 var _results = null;
-var _pendingWells = [];
+var _wellsPending = [];
 var _serverRunning = false;
 var _carrierIn = true;
 
-
-
-// ----- Initialization -----
+var _continueRead = false;
 
 
 
@@ -55,7 +50,7 @@ function loadResults(filename, callback) {
 
 function formatResponse(wells, pending) {
     // wells:  An array of wells to return data on
-    // pending:  An array of wells to be run
+    // pending:  An array of wells remaining to be run
 
     // See data/results-response.json for the response data format
     var results = wells.map(function(well) {
@@ -93,18 +88,23 @@ function formatResponse(wells, pending) {
 
 // ----- Server -----
 
+function initRun(toRead) {
+    _wellsRead = [];
+    _wellsToRead = toRead;
+    _wellsPending = _wellsToRead;
+}
+
 function runRequestHandler(req, res, next) {
 
-    // Get the list of wells to run
-    _wellsToRun = req.body;
-    _pendingWells = _wellsToRun;
+    // Initialize
+    initRun(req.body);
 
     console.log("'/run' request received:");
     console.log(JSON.stringify(req.body));
 
     setTimeout(function() {
         // Respond with the wells to be run
-        var response = {pending : _pendingWells };
+        var response = {pending : _wellsPending };
         var respJSON = JSON.stringify(response);
 
         console.log("Sending a response:");
@@ -115,28 +115,102 @@ function runRequestHandler(req, res, next) {
         // Set the run state
         _run = true;
         _carrierIn = true;
+
+        // Start the run simulator
+        startRunSimulator();
     }, _runDelay);
+}
+
+
+function startRunSimulator() {
+
+    _continueRead = true;
+
+    // Start the first read interval
+    waitForRead();
+}
+
+
+function waitForRead() {
+
+    if (_continueRead && _wellsToRead.length > 0) {
+
+        // Pop the well off of the (front of the) "wellsToRun" stack, and push it to
+        // the end of the "wellsRun" stack.
+        var well = _wellsToRead.shift();
+        _wellsRead.push(well);
+
+        // Set the next interval if there are more wells to read
+        if (_wellsToRead.length > 0) {
+            setTimeout(waitForRead, _readInterval);
+        } else {
+            // No wells are left; stop the simulator (not strictly necessary since length = 0,
+            // but resetting the read state is nonetheless good practice...)
+            stopRunSimulator();
+        }
+    }
+}
+
+
+function stopRunSimulator() {
+    _continueRead = false;
+}
+
+
+// Find the intersection of 2 arrays
+function intersection(arr1, arr2) {
+
+    // Filter out all elements of arr1 that are not in arr2
+    isect = arr1.filter(function(elem) {
+        // Check if elem is in arr2
+        return arr2.indexOf(elem) != -1;
+    });
+
+    return isect;
+}
+
+
+// Return the set difference between 2 arrays
+function setdiff(arr1, arr2) {
+
+    diff = arr1.filter(function(elem) {
+        return arr2.indexOf(elem) == -1;
+    });
+
+    return diff;
+}
+
+
+function adjustPending(pending) {
+
+    // Find all "pending" wells that have been read
+    var wellsToReturn = intersection(pending, _wellsRead);
+    wellsPending = setdiff(pending, wellsToReturn);
+
+    // Update the global pending wells list (in case it's needed later)
+    _wellsPending = wellsPending;
+
+    return {
+        wellsToReturn : wellsToReturn,
+        wellsPending : wellsPending
+    };
 }
 
 
 function resultsRequestHandler(req, res, next) {
 
     // Get the list of pending wells from the client
-    var pendingWells = req.body;
+    var wellsPending = req.body;
 
     // Respond with the results
-    var wellsJSON = JSON.stringify(pendingWells);
+    var wellsJSON = JSON.stringify(wellsPending);
     console.log("'/results' request received:");
-    console.log(JSON.stringify(req.body));
+    console.log(wellsJSON);
 
-    // Send back the results for just one well
-    var well = pendingWells.shift();
-
-    // Update the global pending wells list (in case it's needed later)
-    _pendingWells = pendingWells;
+    var adj = adjustPending(wellsPending);
 
     // Send the response
-    var response = formatResponse([well], pendingWells);
+    var response = formatResponse(adj.wellsToReturn, adj.wellsPending);
     res.send(JSON.stringify(response));
 
 }
@@ -145,20 +219,27 @@ function resultsRequestHandler(req, res, next) {
 function cancelRequestHandler(req, res, next) {
 
     // Get the list of pending wells from the client
-    var pendingWells = req.body;
+    var wellsPending = req.body;
 
-    // Respond with the results
-    var wellsJSON = JSON.stringify(pendingWells);
+    // Print the pending state out to the console
+    var wellsJSON = JSON.stringify(wellsPending);
     console.log("'/cancel' request received:");
-    console.log(JSON.stringify(req.body));
+    console.log(wellsJSON);
+
 
     setTimeout(function() {
+
+        // Get the latest run state
+        var adj = adjustPending(wellsPending);
+
         // Update the global pending wells list (in case it's needed later)
-        _pendingWells = pendingWells;
+        _wellsPending = wellsPending;
+
+        // Stop the simulator
+        stopRunSimulator();
 
         // Send the response
-        var wells = [];
-        var response = formatResponse(wells, pendingWells);
+        var response = formatResponse(adj.wellsToRun, adj.wellsPending);
         res.send(JSON.stringify(response));
     }, _cancelDelay);
 
@@ -229,12 +310,13 @@ function startServer(port, fileServerUrl) {
 }
 
 
-function run(port, fileServerUrl, datafile, runDelay, cancelDelay, ejectDelay) {
+function run(port, fileServerUrl, datafile, runDelay, cancelDelay, ejectDelay, readInterval) {
 
     // These values should be globally-accessible
     _runDelay = runDelay;
     _cancelDelay = cancelDelay;
     _ejectDelay = ejectDelay;
+    _readInterval = readInterval;
 
     // Load the results
     // Don't start the server until the file has loaded (for simplicity)

@@ -1,17 +1,7 @@
-// ----- Imports -----
 
 var Express = require('express');
 
-
-// ----- Constants -----
-
-
-// ----- Globals -----
-
 app = Express();
-
-
-// ----- Functions -----
 
 function run(dir, port) {
 
@@ -20,8 +10,6 @@ function run(dir, port) {
     app.listen(port);
 }
 
-
-// ----- Exports -----
 
 module.exports = {
     run : run

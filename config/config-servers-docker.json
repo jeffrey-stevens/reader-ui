@@ -5,6 +5,7 @@
     "simRunDelay" : 0,
     "simCancelDelay" : 5000,
     "simEjectDelay" : 4000,
+    "simReadInterval" : 3000,
     "simDataFile" : "/usr/src/app/servers/data/Sample data.csv",
     "simulate" : true
 }

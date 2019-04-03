@@ -3,7 +3,6 @@
 
 ## Tasks
 
-* Slow down plate eject, reads
 * Add a project description to the first page
 * Add instructions on how to build and run on Docker
 * Add Docker build and run scripts to package.json
@@ -48,6 +47,8 @@
 * Increase font sizes for the dialogs
 * Increase size of text in "Ready!" button.
 * Increate font sizes throughout
+* After ejecting the carrier, say "Ready!" instead of "Reader ready".
+* 'OK' and 'Cancel' buttons need to be reversed...
 
 
 ### Communications
@@ -98,3 +99,6 @@
 
 * When hovering over the median box in the plots, the median should read
   "median" rather than "reading"
+
+* Sometimes gulp will copy over the wrong "local" configuration file upon build...
+  It usually works upon the second build, however
