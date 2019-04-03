@@ -8,7 +8,7 @@ function run() {
     if (config.simulate === true) {
         var simserver = require("./sequencer-sim.js");
         simserver.run(config.simServerPort, config.fileServerUrl, config.simDataFile,
-            config.runDelay, config.cancelDelay, config.ejectDelay);
+            config.simRunDelay, config.simCancelDelay, config.simEjectDelay, config.simReadInterval);
     }
 
     var fileServer = require("./file-server.js");
